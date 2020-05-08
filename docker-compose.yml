@@ -5,8 +5,8 @@ services:
     ports: 
       - '8000:8000'
     volumes:
-      # using a volume for the app database to avoid losing it 
-      # when rebuilding the container
-      # modify to point to the database file as appropriate 
+      # app database (touch db.sqlite3 if it does not already exist)
       - ./project/db.sqlite3:/usr/src/project/db.sqlite3
+      # .env file (read in settings.py)
+      - ./project/.env:/usr/src/project/.env
     command: python manage.py runserver 0.0.0.0:8000
