@@ -1,0 +1,12 @@
+version: '3.7' 
+services: 
+  web: 
+    build: project
+    ports: 
+      - '8000:8000'
+    volumes:
+      # using a volume for the app database to avoid losing it 
+      # when rebuilding the container
+      # modify to point to the database file as appropriate 
+      - ./project/db.sqlite3:/usr/src/project/db.sqlite3
+    command: python manage.py runserver 0.0.0.0:8000
