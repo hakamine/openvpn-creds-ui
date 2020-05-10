@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-
 from environs import Env
 
 
@@ -27,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY','uf3c3$29xezt&%#kzyqzv$!#iq2pbmz6#o-^cgj1ajyc^op-_1')
+SECRET_KEY = env('SECRET_KEY', 'uf3c3$29xezt&%#kzyqzv$!#iq2pbmz6#o-^cgj1ajyc^op-_1')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', True)
@@ -139,9 +138,15 @@ AUTHENTICATION_BACKENDS = {
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
-LOGIN_URL = '/auth/login/google-oauth2/'
+LOGIN_URL = '/login/google-oauth2/'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+
+# settings required by this django app
+
+# OCU_CLIENT_CONFIG_DIR = env('OCU_CLIENT_CONFIG_DIR')    # path where client configs are stored
+# OCU_CLIENT_CONFIG_FILENAME_PATTERN = env('OCU_CLIENT_CONFIG_FILENAME_PATTERN')
