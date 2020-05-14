@@ -147,6 +147,47 @@ SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 
 # settings required by this django app
-
+CRUI_EASYRSA_DIR = env('CRUI_EASYRSA_DIR')         # directory of easy-rsa  
+CRUI_EASYRSA_SCRIPT = env('CRUI_EASYRSA_SCRIPT')   # how to invoke easy-rsa script 
 # OCU_CLIENT_CONFIG_DIR = env('OCU_CLIENT_CONFIG_DIR')    # path where client configs are stored
 # OCU_CLIENT_CONFIG_FILENAME_PATTERN = env('OCU_CLIENT_CONFIG_FILENAME_PATTERN')
+
+
+# logging config 
+
+# LOGGING = {
+#     'version': 1,
+#     'formatters': {
+#         'verbose': {
+#             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+#         },
+#         'simple': {
+#             'format': '%(levelname)s %(message)s'
+#         },
+#     },
+#     'handlers': {
+#         'console': {
+#             'level': env('CRUI_LOG_LEVEL'),
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'simple'
+#         },
+#         'file': {
+#             'level': env('CRUI_LOG_LEVEL'),
+#             'class': 'logging.FileHandler',
+#             'filename': env('CRUI_LOG_FILE'),
+#             'formatter': 'simple'
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['file'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#     }
+# }
+
+# if DEBUG:
+#     # make all loggers use the console.
+#     for logger in LOGGING['loggers']:
+#         LOGGING['loggers'][logger]['handlers'] = ['console']

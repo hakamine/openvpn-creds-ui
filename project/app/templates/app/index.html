@@ -7,14 +7,18 @@
   <body>
     {% if user.is_authenticated %}
       <p>Logged as {{ user.username }}</p>
-      {% if user_in_pki %}
-        <p>User in PKI, show link to download config file</p>
-        <p><a class="btn btn-primary" href="{% url 'download_config' %}">download config file</a></p>
+      {% if show_cert_exc %}
+        <p>Error: easyrsa show-cert command exception: contact an administrator</p>
       {% else %}
-        <p>User not in PKI, show link to form to register to PKI</p>
-        <p><a class="btn btn-primary" href="{% url 'pki_register' %}">register to VPN PKI</a></p>
+        {% if user_in_pki %}
+          <p>User in PKI, show link to download config file</p>
+          <p><a class="btn btn-primary" href="{% url 'download_config' %}">download config file</a></p>
+        {% else %}
+          <p>User not in PKI, please register
+          <span><a class="btn btn-primary" href="{% url 'pki_register' %}">here</a></span>
+          </p>
+        {% endif %}
       {% endif %}
-
       <p><a class="btn btn-primary" href="{% url 'logout' %}">Logout</a></p>
     {% else %}
       <p>Login required</p>

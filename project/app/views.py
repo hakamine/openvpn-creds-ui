@@ -8,7 +8,7 @@ from django.urls import reverse
 import logging
 
 from .forms import PKIPasswordForm
-
+import scripts.easyrsa_show_cert
 
 logger = logging.getLogger(__name__)
 
@@ -19,10 +19,17 @@ def index(request):
     #   if user in PKI: provide link to download config
     #   if      not   : provde a link to form
     if request.user.is_authenticated:
-        user_in_pki = check_user_in_pki()
-        context = {'user_in_pki': user_in_pki}
+        try:
+            user_in_pki = True if (scripts.easyrsa_show_cert.show_cert(request.user.username).returncode == 0) else False
+        except Exception:
+            context = {'show_cert_exc': True}
+        else:
+            context = {'show_cert_exc': False,
+                       'user_in_pki': user_in_pki}
 
     else:
+        # user not authenticated, no need to pass anything to template
+        # (will show a link to the login page)
         context = {}
     return render(request, 'app/index.html', context)
 
@@ -71,6 +78,3 @@ def download_config(request):
     return response
 
 
-def check_user_in_pki():
-    # TBD
-    return False
