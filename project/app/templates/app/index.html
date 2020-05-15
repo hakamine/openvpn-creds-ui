@@ -8,11 +8,12 @@
     {% if user.is_authenticated %}
       <p>Logged as {{ user.username }}</p>
       {% if show_cert_exc %}
-        <p>Error: easyrsa show-cert command exception: contact an administrator</p>
+        <p>Error: easyrsa show-cert command exception: contact support</p>
       {% else %}
         {% if user_in_pki %}
-          <p>User in PKI, show link to download config file</p>
-          <p><a class="btn btn-primary" href="{% url 'download_config' %}">download config file</a></p>
+          <p>Already registered to VPN, please download config file
+          <span><a class="btn btn-primary" href="{% url 'download_config' %}">here</a></span>
+          </p>
         {% else %}
           <p>User not in PKI, please register
           <span><a class="btn btn-primary" href="{% url 'pki_register' %}">here</a></span>

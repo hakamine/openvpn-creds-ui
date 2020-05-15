@@ -4,17 +4,21 @@ import subprocess
 import sys
 
 
-def show_cert(user):
-    # Invoke easyrsa show-cert, returning its returncode
-    # (0 if could return the cert info, 1 otherwise)
+def build_client(user, password):
+    # Invoke easyrsa build-client-full
+    # (to generate user key and cert in the PKI)
 
     env = os.environ.copy()
+    # need to provide the password in the variable EASYRSA_PASSOUT
+    # as "pass:PASSWORD"
+    env['EASYRSA_PASSOUT'] = "pass:{}".format(password)
 
     spr_command = env['CRUI_EASYRSA_SCRIPT']
-    spr_args = "show-cert {}".format(user)
+    spr_args = "build-client-full {}".format(user)
     commstr = '{} {}'.format(spr_command, spr_args)
 
     print("Running: {}".format(commstr))
+
     try:
         cp = subprocess.run(shlex.split(commstr), env=env,
                             capture_output=True, text=True,
@@ -23,7 +27,7 @@ def show_cert(user):
         print("Exception: {}".format(e))
         raise
 
-    print("retcode:\n {}".format(cp.returncode))
+    print("return code: {}".format(cp.returncode))
     print("stdout:\n {}".format(cp.stdout))
     print("stderr:\n {}".format(cp.stderr))
 
@@ -31,4 +35,4 @@ def show_cert(user):
 
 
 if __name__ == '__main__':
-    sys.exit(show_cert(sys.argv[1]).returncode)
+    sys.exit(build_client(sys.argv[1], sys.argv[2]).returncode)

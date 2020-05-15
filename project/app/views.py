@@ -9,6 +9,7 @@ import logging
 
 from .forms import PKIPasswordForm
 import scripts.easyrsa_show_cert
+import scripts.easyrsa_build_client
 
 logger = logging.getLogger(__name__)
 
@@ -42,10 +43,18 @@ def pki_register(request):
         form = PKIPasswordForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            logger.error('password is {}'.format(form.cleaned_data['password']))
-            # redirect to a new URL:
-            return HttpResponseRedirect(reverse('pki_register_conf'))
+            # call the function to build a cert/key pair for the user
+            # and generate a configuration file
+            try:
+                bcrc = scripts.easyrsa_build_client.build_client(request.user.username, form.cleaned_data['password']).returncode
+            except Exception:
+                return HttpResponseRedirect(reverse('pki_register_conf_error'))
+            else:
+                if bcrc == 0:
+                    # if return code was 0, all is good
+                    return HttpResponseRedirect(reverse('pki_register_conf_ok'))
+                else:
+                    return HttpResponseRedirect(reverse('pki_register_conf_error'))
 
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -55,10 +64,17 @@ def pki_register(request):
 
 
 @login_required
-def pki_register_conf(request):
+def pki_register_conf_ok(request):
 
     context = {}
-    return render(request, 'app/pki_register_conf.html', context)
+    return render(request, 'app/pki_register_conf_ok.html', context)
+
+
+@login_required
+def pki_register_conf_error(request):
+
+    context = {}
+    return render(request, 'app/pki_register_conf_error.html', context)
 
 
 @login_required

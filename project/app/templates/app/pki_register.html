@@ -7,7 +7,7 @@
   <body>
     <h2>VPN registration: {{ user.username }}</h2>
 
-    <p>Please use a password between 8-32 characters (lowercase/uppercase letters, digits only) </p>
+    <p>Please use a password between 8-32 characters (alphanumeric only)</p>
     <form action="{% url 'pki_register' %}" method="post">
     {% csrf_token %}
     {{ form }}
