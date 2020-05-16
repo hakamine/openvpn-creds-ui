@@ -8,5 +8,5 @@ urlpatterns = [
     path('pki_register', views.pki_register, name='pki_register'),
     path('pki_register_conf_ok', views.pki_register_conf_ok, name='pki_register_conf_ok'),
     path('pki_register_conf_error', views.pki_register_conf_error, name='pki_register_conf_error'),
-
+    path('download_config_error', views.download_config_error, name='download_config_error'),
 ]

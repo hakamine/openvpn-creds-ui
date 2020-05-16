@@ -2,13 +2,13 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Main Page</title>
+    <title>VPN creds</title>
   </head>
   <body>
     {% if user.is_authenticated %}
       <p>Logged as {{ user.username }}</p>
       {% if show_cert_exc %}
-        <p>Error: easyrsa show-cert command exception: contact support</p>
+        <p>Error: easyrsa show-cert command exception: contact an administrator</p>
       {% else %}
         {% if user_in_pki %}
           <p>Already registered to VPN, please download config file

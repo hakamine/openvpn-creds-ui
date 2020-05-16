@@ -2,12 +2,13 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>User Info</title>
+    <title>VPN creds</title>
   </head>
   <body>
     <h2>VPN registration: {{ user.username }}</h2>
 
     <p>Please use a password between 8-32 characters (alphanumeric only)</p>
+    <p>Please keep your password safe (needed when using the VPN)
     <form action="{% url 'pki_register' %}" method="post">
     {% csrf_token %}
     {{ form }}

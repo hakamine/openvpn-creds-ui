@@ -5,9 +5,9 @@
     <title>VPN creds</title>
   </head>
   <body>
-    <h2>VPN registration error: {{ user.username }}</h2>
+    <h2>Download configuration error: {{ user.username }}</h2>
 
-    <p>Error processing the registration request (easyrsa build-client-full). Please contact an adminstrator.</p>
+    <p>Error generating VPN configuration file. Please contact an adminstrator.</p>
     <p><a class="btn btn-primary" href="{% url 'index' %}">Go to main page</a></p>
 
   </body>

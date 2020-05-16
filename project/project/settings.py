@@ -147,13 +147,13 @@ SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 
 # settings required by this django app
-CRUI_EASYRSA_DIR = env('CRUI_EASYRSA_DIR')         # directory of easy-rsa  
-CRUI_EASYRSA_SCRIPT = env('CRUI_EASYRSA_SCRIPT')   # how to invoke easy-rsa script 
-# OCU_CLIENT_CONFIG_DIR = env('OCU_CLIENT_CONFIG_DIR')    # path where client configs are stored
-# OCU_CLIENT_CONFIG_FILENAME_PATTERN = env('OCU_CLIENT_CONFIG_FILENAME_PATTERN')
+CRUI_EASYRSA_DIR = env('CRUI_EASYRSA_DIR')         # directory of easy-rsa
+CRUI_EASYRSA_SCRIPT = env('CRUI_EASYRSA_SCRIPT')   # how to invoke easy-rsa script
+CRUI_OPENVPN_CLIENT_BASE_CFG = env('CRUI_OPENVPN_CLIENT_BASE_CFG')
+CRUI_OPENVPN_TA = env('CRUI_OPENVPN_TA')
 
 
-# logging config 
+# logging config
 
 # LOGGING = {
 #     'version': 1,
