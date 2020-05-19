@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 def index(request):
+
     # if user is authenticated:
     #   check if they are already in the PKI
     #   if user in PKI: provide link to download config
@@ -91,24 +92,19 @@ def download_config(request):
                                                    env('CRUI_OPENVPN_CLIENT_BASE_CFG'),
                                                    env('CRUI_OPENVPN_TA')])
     except Exception as e:
-        logger.ERROR("Exception: {}".format(e))
+        logger.error("Exception: {}".format(e))
         return HttpResponseRedirect(reverse('download_config_error'))
 
     if rc != 0:
-        logger.ERROR("gen_ovpn_cli_cfg() return code: {}".format(rc))
+        logger.error("gen_ovpn_cli_cfg() return code: {}".format(rc))
         return HttpResponseRedirect(reverse('download_config_error'))
 
     the_file = BytesIO(vpncfg)
     filename = "{}.ovpn".format(request.user.username)
 
-    # we have the config file saved as file_path
-    # file_path = "/Users/hector/shared-vbox/artefactual/vpn-new/charon-vpn-hakamine.ovpn"
-    # the_file = open(file_path, "rb")
-    # filename = os.path.basename(file_path)
     chunk_size = 8192
     response = StreamingHttpResponse(FileWrapper(the_file, chunk_size),
                                      content_type=mimetypes.guess_type(filename)[0])
-    # response['Content-Length'] = os.path.getsize(file_path)
     response['Content-Length'] = len(vpncfg)
     response['Content-Disposition'] = "attachment; filename={}".format(filename)
     return response

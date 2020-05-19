@@ -9,8 +9,12 @@
 #   - macOS: tunnelblick
 
 from io import BytesIO
+import logging
 import os
 import sys
+
+
+logger = logging.getLogger(__name__)
 
 
 def main(arguments):
@@ -19,6 +23,8 @@ def main(arguments):
 
     if len(arguments) != 4:
         sys.stderr.write("must specify the following arguments: <username> <easyrsa_pki_dir> <base_cfg_file> <ta_key>")
+        logger.error("Incorrect number of arguments")
+        rc = -1
         return rc, vpnconfig
     username = arguments[0]
     EASYRSA_PKI_DIR = arguments[1]
@@ -38,6 +44,8 @@ def main(arguments):
         ta_key_file = open(TA_KEY_FILE, "rb")
     except IOError as e:
         sys.stderr.write("Error when trying to open input files: {}\n".format(e))
+        logger.error("Error when trying to open input files: {}".format(e))
+        rc = -2
         return rc, vpnconfig.getvalue()
 
     # write configuration to stdout
@@ -65,6 +73,8 @@ def main(arguments):
 
     except Exception as e:
         sys.stderr.write("Error: {}\n".format(e))
+        logger.error("Exception: {}".format(e))
+        rc = -3
         return rc, vpnconfig.getvalue()
 
 
