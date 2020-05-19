@@ -90,7 +90,8 @@ def download_config(request):
         rc, vpncfg = scripts.gen_ovpn_cli_cfg.main([request.user.username,
                                                    os.path.join(env('CRUI_EASYRSA_DIR'), "pki"),
                                                    env('CRUI_OPENVPN_CLIENT_BASE_CFG'),
-                                                   env('CRUI_OPENVPN_TA')])
+                                                   env('CRUI_OPENVPN_TA'),
+                                                   env('CRUI_CAT')])
     except Exception as e:
         logger.error("Exception: {}".format(e))
         return HttpResponseRedirect(reverse('download_config_error'))
