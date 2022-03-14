@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from environs import Env
 from io import BytesIO
@@ -8,11 +9,13 @@ from django.http import StreamingHttpResponse, HttpResponseRedirect
 from wsgiref.util import FileWrapper
 from django.urls import reverse
 import logging
+import sys
 
 from .forms import PKIPasswordForm
 import scripts.easyrsa_show_cert
 import scripts.easyrsa_build_client
-import scripts.gen_ovpn_cli_cfg
+import scripts.cat_file
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +33,8 @@ def index(request):
             context = {'show_cert_exc': True}
         else:
             context = {'show_cert_exc': False,
-                       'user_in_pki': user_in_pki}
+                       'user_in_pki': user_in_pki,
+                       'openvpn_client_base_cfg_values': settings.CRUI_OPENVPN_CLIENT_BASE_CFG_VALUES}
 
     else:
         # user not authenticated, no need to pass anything to template
@@ -82,7 +86,53 @@ def pki_register_conf_error(request):
 
 
 @login_required
-def download_config(request):
+def download_config(request, config_name):
+
+    # check all the files required exist
+    # note that the app user may not have permissions to see some of these files
+    # such as the ones in PKI dir unless using sudo
+    try:
+        ta_key = scripts.cat_file.main(settings.CRUI_CAT, settings.CRUI_OPENVPN_TA)
+        ca_cert = scripts.cat_file.main(settings.CRUI_CAT, os.path.join(settings.CRUI_EASYRSA_DIR, "pki", "ca.crt"))
+        cli_cert = scripts.cat_file.main(settings.CRUI_CAT, os.path.join(settings.CRUI_EASYRSA_DIR, "pki", "issued", "{}.crt".format(request.user.username)))
+        cli_key = scripts.cat_file.main(settings.CRUI_CAT, os.path.join(settings.CRUI_EASYRSA_DIR, "pki", "private", "{}.key".format(request.user.username)))
+    except Exception as e:
+        sys.stderr.write("Error when trying to open input files: {}\n".format(e))
+        logger.error("Error when trying to open input files: {}".format(e))
+        return HttpResponseRedirect(reverse('download_config_error'))
+
+
+    # put all together into a file to download
+    try:
+        # context: start with the vars for the base config
+        context = next((dict for dict in settings.CRUI_OPENVPN_CLIENT_BASE_CFG_VALUES if dict['name'] == config_name), None)
+        # context: add the certs and keys info, note that we need to convert bytes object to string (decode)
+        context['ca_cert'] = ca_cert.decode("ascii")
+        context['cli_cert'] = cli_cert.decode("ascii")
+        context['cli_key'] = cli_key.decode("ascii")
+        context['ta_key'] = ta_key.decode("ascii")
+
+        # print(settings.CRUI_OPENVPN_CLIENT_BASE_CFG_VALUES)
+        # print(config_name)
+        # print(context)
+        # return HttpResponse(render_to_string('app/ovpn/base_config', context=context))
+
+        vpncfg = render_to_string('app/ovpn/base_config', context=context)
+        the_file = BytesIO(bytes(vpncfg, "ascii"))
+        filename = "{}-{}.ovpn".format(request.user.username, config_name)
+
+        chunk_size = 8192
+        response = StreamingHttpResponse(FileWrapper(the_file, chunk_size),
+                                        content_type=mimetypes.guess_type(filename)[0])
+        response['Content-Length'] = len(vpncfg)
+        response['Content-Disposition'] = "attachment; filename={}".format(filename)
+        return response
+
+    except Exception as e:
+        sys.stderr.write("Error when trying to open input files: {}\n".format(e))
+        logger.error("Error when trying to open input files: {}".format(e))
+        return HttpResponseRedirect(reverse('download_config_error'))
+
 
     env = Env()
     # generate config file and serve

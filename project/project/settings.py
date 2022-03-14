@@ -149,9 +149,9 @@ SOCIAL_AUTH_URL_NAMESPACE = 'social'
 # settings required by this django app
 CRUI_EASYRSA_DIR = env('CRUI_EASYRSA_DIR')         # directory of easy-rsa
 CRUI_EASYRSA_SCRIPT = env('CRUI_EASYRSA_SCRIPT')   # how to invoke easy-rsa script
-CRUI_OPENVPN_CLIENT_BASE_CFG = env('CRUI_OPENVPN_CLIENT_BASE_CFG')
 CRUI_OPENVPN_TA = env('CRUI_OPENVPN_TA')
-
+CRUI_OPENVPN_CLIENT_BASE_CFG_VALUES = env.json('CRUI_OPENVPN_CLIENT_BASE_CFG_VALUES')
+CRUI_CAT = env('CRUI_CAT')
 
 # logging config
 
