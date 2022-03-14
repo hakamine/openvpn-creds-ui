@@ -5,14 +5,11 @@ services:
     ports: 
       - '8000:8000'
     volumes:
-      # app database (touch db.sqlite3 if it does not already exist)
-      - ./project/db.sqlite3:/usr/src/project/db.sqlite3
-      # .env file (read in settings.py)
-      - ./project/.env:/usr/src/project/.env
       # app config files 
       - ./etc:/etc/openvpn-creds-ui
       # app logs
       - ./var:/var/log/openvpn-creds-ui
       # PKI
       - ./pki:/easy-rsa/pki
-    command: python3 manage.py runserver 0.0.0.0:8000
+      # source code (also .env and db.sqlite3)
+      - "./project:/usr/src/project"

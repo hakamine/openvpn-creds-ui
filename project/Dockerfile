@@ -22,3 +22,5 @@ RUN pip install -r requirements.txt
 
 # copy project
 COPY . /usr/src/project/
+
+CMD ["gunicorn", "project.wsgi:application", "-w", "2",  "-b",  ":8000", "--reload"]
